@@ -1,5 +1,5 @@
 {
-  "name": "@eviljoker/dsh-experimental-computer-use-linux-nde-mcp",
+  "name": "@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp",
   "version": "0.1.0",
   "description": "DSH Cordis computer-use provider that spawns the static-claude-nde musl binary built by computer-use-linux-nde. Local file: install only \u2014 not published to npmjs.",
   "license": "MIT",

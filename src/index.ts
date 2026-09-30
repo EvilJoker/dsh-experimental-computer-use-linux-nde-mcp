@@ -18,12 +18,12 @@
  * Install via the dsh-market catalog (after the EvilJoker PR to
  * awesome-dsh-plugin merges), or directly:
  *
- *   dsh plugin --profile <name> add @eviljoker/dsh-experimental-computer-use-linux-nde-mcp
+ *   dsh plugin --profile <name> add @ashtonsun/dsh-experimental-computer-use-linux-nde-mcp
  *
  * or for local development:
  *
  *   dsh plugin --profile <name> add /path/to/this/repo
- * @module @eviljoker/dsh-experimental-computer-use-linux-nde-mcp
+ * @module @ashtonsun/dsh-experimental-computer-use-linux-nde-mcp
  */
 
 import type { Context, Fiber } from '@deepseek-ai/cordis'

@@ -1,4 +1,4 @@
-# Default Cordis composition for @eviljoker/dsh-experimental-computer-use-linux-nde-mcp.
+# Default Cordis composition for @ashtonsun/dsh-experimental-computer-use-linux-nde-mcp.
 #
 # Mount the shared computer-use slot first, then register this package as the
 # exclusive provider. The spawned process path is the musl-static
@@ -9,7 +9,7 @@
     - id: computer-use
       name: '@deepseek-ai/dsh-computer-use'
     - id: computer-use-linux-nde-mcp
-      name: '@eviljoker/dsh-experimental-computer-use-linux-nde-mcp'
+      name: '@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp'
       config:
         command: /home/10312862@zte.intra/dsh_test/computer-use-poc/computer-use-linux.static-claude-nde-v0.7.7-nde.3-musl
         args: [mcp]
