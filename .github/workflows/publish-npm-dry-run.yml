@@ -1,0 +1,50 @@
+name: publish-npm-dry-run
+
+# Manual trigger. Runs the same steps as publish-npm but stops
+# before publishing — gives you a way to verify the build + smoke
+# test pass on a tag-style build, without touching the npm registry.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dry-run:
+    name: Build and dry-run publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript build (tsc -> lib/)
+        run: npm run build
+
+      - name: Verify dist contents
+        run: |
+          if [ ! -f lib/index.js ]; then
+            echo "::error::lib/index.js missing after build" >&2
+            exit 1
+          fi
+          test -f lib/index.d.ts
+          echo "dist OK: lib/index.js + lib/index.d.ts"
+
+      - name: Smoke-test the built package
+        run: |
+          node -e "import('./lib/index.js').then(m => {
+            if (typeof m.apply !== 'function') throw new Error('apply not exported');
+            if (typeof m.Config !== 'function') throw new Error('Config not exported');
+            if (m.name !== 'experimental-computer-use-linux-nde-mcp') throw new Error('name mismatch');
+            console.log('lib/index.js exports look correct:', m.name);
+          }).catch(e => { console.error(e.message); process.exit(1); })"
+
+      - name: Dry-run publish (no upload, no auth)
+        run: npm publish --dry-run --access=public

@@ -1,0 +1,61 @@
+name: publish-npm
+
+# Trigger: only on tag push. Tags must look like v0.0.0-alpha.0 or
+# vX.Y.Z-Nde.N. The leading `v` matches npm's semver tag convention
+# and avoids accidental triggers from random git tags.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Required secrets (set on GitHub repo settings > Secrets and variables > Actions):
+#   NPM_TOKEN — npm automation token from an account that owns the
+#              @ashtonsun scope and has publish permission. The token
+#              used during local testing has been revoked; generate a
+#              new one at https://www.npmjs.com/settings/ashtonsun/tokens
+#              with type=Automation, scope=Publish to @ashtonsun/*.
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build and publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript build (tsc -> lib/)
+        run: npm run build
+
+      - name: Verify dist contents
+        run: |
+          if [ ! -f lib/index.js ]; then
+            echo "::error::lib/index.js missing after build" >&2
+            exit 1
+          fi
+          test -f lib/index.d.ts
+          echo "dist OK: lib/index.js + lib/index.d.ts"
+
+      - name: Smoke-test the built package
+        run: |
+          node -e "import('./lib/index.js').then(m => {
+            if (typeof m.apply !== 'function') throw new Error('apply not exported');
+            if (typeof m.Config !== 'function') throw new Error('Config not exported');
+            if (m.name !== 'experimental-computer-use-linux-nde-mcp') throw new Error('name mismatch');
+            console.log('lib/index.js exports look correct:', m.name);
+          }).catch(e => { console.error(e.message); process.exit(1); })"
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access=public --provenance
