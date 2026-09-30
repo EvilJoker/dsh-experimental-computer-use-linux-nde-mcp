@@ -1,0 +1,22 @@
+# Default Cordis composition for @eviljoker/dsh-experimental-computer-use-linux-nde-mcp.
+#
+# Mount the shared computer-use slot first, then register this package as the
+# exclusive provider. The spawned process path is the musl-static
+# computer-use-linux-nde v0.7.7-nde.3 binary; update the `command` field by
+# hand when you ship a newer v0.7.7-nde.N release (no provider upgrade
+# required).
+- insert:
+    - id: computer-use
+      name: '@deepseek-ai/dsh-computer-use'
+    - id: computer-use-linux-nde-mcp
+      name: '@eviljoker/dsh-experimental-computer-use-linux-nde-mcp'
+      config:
+        command: /home/10312862@zte.intra/dsh_test/computer-use-poc/computer-use-linux.static-claude-nde-v0.7.7-nde.3-musl
+        args: [mcp]
+        reconnect:
+          enabled: true
+          initialDelayMs: 500
+          maxDelayMs: 30000
+          maxAttempts: 10
+        env:
+          NDE_AT_SPI_SCOPE_REQUIRED: '1'
