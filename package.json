@@ -1,14 +1,11 @@
 {
   "name": "@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "DSH Cordis computer-use provider that spawns the static-claude-nde musl binary built by computer-use-linux-nde. Local file: install only — not published to npmjs.",
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "bin": {
-    "computer-use-linux-nde": "bin/computer-use-linux-static-claude-nde-x86_64-unknown-linux-musl"
-  },
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
