@@ -1,6 +1,6 @@
 {
   "name": "@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "DSH Cordis computer-use provider that spawns the static-claude-nde musl binary built by computer-use-linux-nde. Local file: install only \u2014 not published to npmjs.",
   "license": "MIT",
   "type": "module",
@@ -60,5 +60,13 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvilJoker/dsh-experimental-computer-use-linux-nde-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EvilJoker/dsh-experimental-computer-use-linux-nde-mcp/issues"
+  },
+  "homepage": "https://github.com/EvilJoker/dsh-experimental-computer-use-linux-nde-mcp#readme"
 }
