@@ -1,17 +1,19 @@
 # Default Cordis composition for @ashtonsun/dsh-experimental-computer-use-linux-nde-mcp.
 #
 # Mount the shared computer-use slot first, then register this package as the
-# exclusive provider. The spawned process path is the musl-static
-# computer-use-linux-nde v0.7.7-nde.3 binary; update the `command` field by
-# hand when you ship a newer v0.7.7-nde.N release (no provider upgrade
-# required).
+# exclusive provider.
+#
+# The spawned musl binary is fetched on `npm install` via the postinstall hook
+# (scripts/install-binary.js) from the GitHub release identified by the
+# `binaryTag` field in package.json. To upgrade the binary, bump `binaryTag`
+# and republish this npm package; no provider reinstall is required.
 - insert:
     - id: computer-use
       name: '@deepseek-ai/dsh-computer-use'
     - id: computer-use-linux-nde-mcp
       name: '@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp'
       config:
-        command: /home/10312862@zte.intra/dsh_test/computer-use-poc/computer-use-linux.static-claude-nde-v0.7.7-nde.3-musl
+        command: ./node_modules/@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp/bin/computer-use-linux-static-claude-nde-x86_64-unknown-linux-musl
         args: [mcp]
         reconnect:
           enabled: true

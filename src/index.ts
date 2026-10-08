@@ -2,9 +2,13 @@
  * Exclusive DSH computer-use provider that spawns the Nde-adapted
  * static-claude-nde musl binary built by computer-use-linux-nde.
  *
- * The default composition in cordis.patch.yml spawns v0.7.7-nde.3 of the
- * binary. To upgrade, edit cordis.patch.yml and replace the `command`
- * path with the new v0.7.7-nde.N asset; no provider re-install is required.
+ * The musl binary is fetched on `npm install` via the postinstall script
+ * (`scripts/install-binary.js`) from the GitHub release of
+ * `EvilJoker/computer-use-linux-zte-nde` identified by the `binaryTag`
+ * field in package.json. The default pins v0.7.7-nde.3. To upgrade,
+ * bump `binaryTag` in package.json and republish this npm package; the
+ * cordis patch overlay's `command` is left alone and resolves to the
+ * newly-installed binary automatically.
  *
  * Like the upstream @deepseek-ai/dsh-experimental-computer-use-cua-driver-mcp,
  * this provider reserves the shared computer-use slot and spawns an MCP stdio
@@ -18,7 +22,7 @@
  * Install via the dsh-market catalog (after the EvilJoker PR to
  * awesome-dsh-plugin merges), or directly:
  *
- *   dsh plugin --profile <name> add @ashtonsun/dsh-experimental-computer-use-linux-nde-mcp
+ *   npm install @ashtonsun/dsh-experimental-computer-use-linux-nde-mcp
  *
  * or for local development:
  *
