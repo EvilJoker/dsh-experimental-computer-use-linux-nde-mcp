@@ -31,10 +31,44 @@
  */
 
 import type { Context, Fiber } from '@deepseek-ai/cordis'
+import { existsSync } from 'node:fs'
+import { dirname, isAbsolute, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import z from '@deepseek-ai/schemastery'
 import { ComputerUseProviderName } from '@deepseek-ai/dsh-computer-use/brand'
 import * as McpClient from '@deepseek-ai/dsh-mcp-client'
 import type {} from '@deepseek-ai/dsh-computer-use'
+
+/** Default binary filename (must stay in sync with `binarySource.asset` in package.json). */
+const BIN_NAME = 'computer-use-linux-static-claude-nde-x86_64-unknown-linux-musl'
+
+/**
+ * Resolve the command to an absolute path.
+ *
+ * The cordis patch overlays a `command` value that the user authors.
+ * If it is already absolute we use it verbatim. Otherwise we resolve
+ * it relative to this provider's install dir — which is exactly where
+ * the postinstall script (`scripts/install-binary.js`) drops the
+ * binary at `npm install` time.
+ *
+ * This keeps the user's cordis patch copy-portable across hosts (no
+ * hard-coded `/home/<user>/...` paths leaking into the catalog) while
+ * still tolerating dsh web processes that are launched from a cwd
+ * other than the profile directory.
+ */
+function resolveCommand(command: string): string {
+  if (isAbsolute(command)) return command
+  // Resolve relative to this provider's install directory:
+  //   .../node_modules/@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp/lib/index.js
+  // → .../node_modules/@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp/
+  const here = dirname(fileURLToPath(import.meta.url))
+  const providerRoot = resolve(here, '..')
+  const candidate = join(providerRoot, command)
+  if (existsSync(candidate)) return candidate
+  // Last-resort fallback: as given (so the user can still point at a
+  // binary elsewhere on disk via absolute path).
+  return command
+}
 
 /** Cordis plugin identity for the Nde-adapted musl binary. */
 export const name = 'experimental-computer-use-linux-nde-mcp'
@@ -106,7 +140,7 @@ export async function apply(ctx: Context, config: Config): Promise<void> {
   }
 
   const connection = McpClient.Config({
-    command: config.command,
+    command: resolveCommand(config.command),
     args: config.args,
     ...(config.toolCallTimeoutMs === undefined
       ? {}

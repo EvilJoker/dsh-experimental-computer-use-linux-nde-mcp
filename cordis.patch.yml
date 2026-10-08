@@ -7,13 +7,18 @@
 # (scripts/install-binary.js) from the GitHub release identified by the
 # `binaryTag` field in package.json. To upgrade the binary, bump `binaryTag`
 # and republish this npm package; no provider reinstall is required.
+#
+# `command` is a relative path under the provider's install directory
+# (bin/<asset>). The provider resolves it to an absolute path against
+# import.meta.url in src/index.ts, so this patch is portable across hosts
+# without hard-coding /home/<user>/ or relying on dsh web's cwd.
 - insert:
     - id: computer-use
       name: '@deepseek-ai/dsh-computer-use'
     - id: computer-use-linux-nde-mcp
       name: '@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp'
       config:
-        command: ./node_modules/@ashtonsun/dsh-experimental-computer-use-linux-nde-mcp/bin/computer-use-linux-static-claude-nde-x86_64-unknown-linux-musl
+        command: bin/computer-use-linux-static-claude-nde-x86_64-unknown-linux-musl
         args: [mcp]
         reconnect:
           enabled: true
